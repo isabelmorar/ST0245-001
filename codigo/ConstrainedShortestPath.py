@@ -46,44 +46,7 @@ def shortest_distance(graph, starting_vertex, destination):
                 distances[neighbor] = distance
                 heapq.heappush(priority, (distance, neighbor))
 
-    return distances, anteriores
-
-
-def lowest_risk(graph, starting_vertex, destination):
-    anteriores = {v: None for v in graph}
-    risks = {v: float('infinity') for v in graph}
-    anteriores[starting_vertex] = -1
-    risks[starting_vertex] = 0
-
-    priority = [(starting_vertex, 0)]
-    while len(priority) > 0:
-        current_vertex, avg_risk = heapq.heappop(priority)
-        if current_vertex is destination:
-           break
-       
-        for neighbor, values in graph[current_vertex].items():
-            weight, risk = values
-            previous = current_vertex
-            temp = anteriores[neighbor]
-            
-            if anteriores[current_vertex] is not neighbor:
-                anteriores[neighbor] = previous
-                current_path = path(anteriores, neighbor,[neighbor])   
-                
-                sum1, sum2 = 0, 0
-                for i in range(len(current_path)-1):
-                    dist, riesgo = graph[current_path[i]][current_path[i+1]]
-                    sum1 += riesgo*dist
-                    sum2 += dist
-                    
-                av_risk = sum1/sum2
-                if av_risk < risks[neighbor]:
-                    risks[neighbor] = av_risk
-                    heapq.heappush(priority, (neighbor, risk))
-                else:
-                    anteriores[neighbor] = temp 
-
-    return anteriores, risks
+    return distances[destination], anteriores
 
 
 def algorithm1(graph, starting_vertex, destination, max_risk):
@@ -124,7 +87,7 @@ def algorithm1(graph, starting_vertex, destination, max_risk):
                 else:
                     anteriores[neighbor] = temp 
 
-    return distances, anteriores, risks
+    return distances[destination], anteriores, risks[destination]
 
 
 def path(previous, i, result):
@@ -142,8 +105,8 @@ def main():
                          
     origin = "A"
     destination = "B"
-    distances, anteriores, risks = algorithm1(sample, origin, destination, 0.5)
-    #distances, anteriores = shortest_distance(adj_list, origin, destination)
+    computed_distance, anteriores, computed_risk = algorithm1(sample, origin, destination, 0.5)
+    #computed_distance, anteriores = shortest_distance(adj_list, origin, destination)
     #anteriores, risks = lowest_risk(adj_list, origin, destination)
     
     try: 
@@ -152,8 +115,8 @@ def main():
         for i in range(len(camino)-1, -1,-1):
             print(camino[i], "->", end=" ")
         print(" ")
-        #print("Total Distance:", distances[destination])
-        print("Average Risk:", risks[destination])
+        #print("Total Distance:", computed_distance)
+        print("Average Risk:", computed_risk)
     except KeyError:
         print("No path with given conditions")
 
