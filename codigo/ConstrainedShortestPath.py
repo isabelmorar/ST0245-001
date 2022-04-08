@@ -61,7 +61,6 @@ def algorithm1(graph, starting_vertex, destination, max_risk):
         for neighbor, values in graph[current_vertex].items():
             weight, risk = values
             distance = current_distance + weight
-            
             if distance < distances[neighbor]:
                 temp = prev_vertex[neighbor]
                 prev_vertex[neighbor] = current_vertex
@@ -125,10 +124,3 @@ def main():
     
 
 main()
-
-
-
-
-
-
-
