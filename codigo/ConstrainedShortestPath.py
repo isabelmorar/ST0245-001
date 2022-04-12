@@ -55,7 +55,8 @@ def algorithm1(graph, starting_vertex, destination, max_risk):
     priority = [(0, starting_vertex, 0)]
     while len(priority) > 0:
         current_distance, current_vertex, current_sum1 = heapq.heappop(priority)
-
+        if current_vertex is destination:
+            break
         for neighbor, values in graph[current_vertex].items():
             weight, risk = values
             distance = current_distance + weight
@@ -104,29 +105,24 @@ def path(previous, i, result):
 
 
 def main():
-    sample = {"A": {"C": (5, 0.2), "D": (11, 0.4)}, "B": {"C":(7,0.32), "E": (14,0.41)}, "C": {"B": (7,0.32), "A": (5,0.2)}, "D": {"A": (11,0.4), "E": (8,1.5)}, "E": {"B": (14,0.41), "D": (8,1.5)}}
-    
     data = pd.read_csv('calles_de_medellin_con_acoso.csv', sep=";")
     adj_list = data_structure(data)
-    trial = sample
+    origin = input("Enter origin coordinates: ")
+    destination = input("Enter destination coordinates: ")
+    max_risk = float(input("Enter maximum risk desired along path: "))
+    print("\n")
+    computed_distance, prev_vertex, computed_risk = algorithm1(adj_list, origin, destination, max_risk)
+    min_distance, prev_vertex2 = shortest_distance(adj_list, origin, destination)
     
-    origin = "A"
-    destination = "E"
-    max_risk = 0.8
-    #computed_distance, prev_vertex, computed_risk = algorithm1(trial, origin, destination, max_risk)
-    #computed_distance, prev_vertex = shortest_distance(trial, origin, destination)
-    computed_risk, prev_vertex = lowest_risk(trial, origin, destination)
-
-
+    print("\nShortest path from {} to {} without exceeding risk of {}: ".format(origin, destination, max_risk), "\n")
     try: 
-        camino = path(prev_vertex, destination, deque([destination]))
-        print("Shortest path from {} to {}: ".format(origin, destination), "\n")
-        while len(camino) != 0:
-            print(camino.pop(),"->", end=" ")
-        #print("\n\nTotal Distance: {} meters".format(round(computed_distance,3)))
-        print("Average Risk:", round(computed_risk,3))
-    
+        path1 = path(prev_vertex, destination, deque([destination]))
+        while len(path1) != 0:
+            print(path1.pop(),"->", end=" ")
+        print("\n\nTotal Distance:", computed_distance)
+        print("Average Weighted Risk:", computed_risk)
     except KeyError:
         print("No path with given conditions")
+
 
 main()
