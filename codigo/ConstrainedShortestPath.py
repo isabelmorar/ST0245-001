@@ -54,38 +54,46 @@ def algorithm1(graph, starting_vertex, destination, max_risk):
 
     priority = [(0, starting_vertex, 0)]
     while len(priority) > 0:
-        current_distance, current_vertex, current_risk = heapq.heappop(priority)
-        if current_vertex is destination:
-           break
-       
+        current_distance, current_vertex, current_sum1 = heapq.heappop(priority)
+
         for neighbor, values in graph[current_vertex].items():
             weight, risk = values
             distance = current_distance + weight
+            
             if distance < distances[neighbor]:
-                temp = prev_vertex[neighbor]
-                prev_vertex[neighbor] = current_vertex
-                current_path = path(prev_vertex, neighbor, deque([neighbor]))
-                sum1, sum2 = 0, 0
-                while len(current_path) > 1:
-                    if len(current_path) == 3:
-                        one, two, three = current_path.pop(), current_path.pop(), current_path.pop()
-                        dist1, risk1 = graph[one][two]
-                        dist2, risk2 = graph[two][three]
-                        sum1 += (risk1*dist1 + risk2*dist2)
-                        sum2 += (dist1 + dist2)
-                    else:
-                        dist, riesgo = graph[current_path.pop()][current_path.pop()]
-                        sum1 += riesgo*dist
-                        sum2 += dist
-                    
-                av_risk = sum1/sum2
-                if av_risk <= max_risk:
+                sum1 = current_sum1 + (weight*risk)
+                av_risk = sum1/distance 
+                if av_risk <= max_risk: 
+                    prev_vertex[neighbor] = current_vertex
                     distances[neighbor], risks[neighbor] = distance, av_risk
-                    heapq.heappush(priority, (distance, neighbor, av_risk))
-                else:
-                    prev_vertex[neighbor] = temp 
-
+                    heapq.heappush(priority, (distance, neighbor, sum1))
+                    
     return distances[destination], prev_vertex, risks[destination]
+
+
+def lowest_risk(graph, starting_vertex, destination):
+    risks = {v: float('infinity') for v in graph}
+    prev_vertex = {v: None for v in graph}
+    risks[starting_vertex] = 0
+    prev_vertex[starting_vertex] = -1
+    
+    priority = [(0, starting_vertex, 0)]
+    while len(priority) > 0:
+        current_distance, current_vertex, current_sum1 = heapq.heappop(priority)
+        if current_vertex is destination:
+           break
+        for neighbor, values in graph[current_vertex].items():
+            weight, risk = values
+            distance = current_distance + weight
+            sum1 = current_sum1 + (weight*risk)
+            av_risk = sum1/distance 
+            
+            if av_risk < risks[neighbor]: 
+                prev_vertex[neighbor] = current_vertex
+                risks[neighbor] = av_risk
+                heapq.heappush(priority, (distance, neighbor, sum1))
+                    
+    return risks[destination], prev_vertex
 
 
 def path(previous, i, result):
@@ -96,31 +104,29 @@ def path(previous, i, result):
 
 
 def main():
+    sample = {"A": {"C": (5, 0.2), "D": (11, 0.4)}, "B": {"C":(7,0.32), "E": (14,0.41)}, "C": {"B": (7,0.32), "A": (5,0.2)}, "D": {"A": (11,0.4), "E": (8,1.5)}, "E": {"B": (14,0.41), "D": (8,1.5)}}
+    
     data = pd.read_csv('calles_de_medellin_con_acoso.csv', sep=";")
     adj_list = data_structure(data)
-    origin = input("Enter origin coordinates: ")
-    destination = input("Enter destination coordinates: ")
-    max_risk = float(input("Enter maximum risk desired along path: "))
-    print("\n")
-    computed_distance, prev_vertex, computed_risk = algorithm1(adj_list, origin, destination, max_risk)
-    min_distance, prev_vertex2 = shortest_distance(adj_list, origin, destination)
+    trial = sample
     
-    print("\nShortest path from {} to {} without exceeding risk of {}: ".format(origin, destination, max_risk), "\n")
+    origin = "A"
+    destination = "E"
+    max_risk = 0.8
+    #computed_distance, prev_vertex, computed_risk = algorithm1(trial, origin, destination, max_risk)
+    #computed_distance, prev_vertex = shortest_distance(trial, origin, destination)
+    computed_risk, prev_vertex = lowest_risk(trial, origin, destination)
+
+
     try: 
-        path1 = path(prev_vertex, destination, deque([destination]))
-        while len(path1) != 0:
-            print(path1.pop(),"->", end=" ")
-        print("\n\nTotal Distance:", computed_distance)
-        print("Average Weighted Risk:", computed_risk)
+        camino = path(prev_vertex, destination, deque([destination]))
+        print("Shortest path from {} to {}: ".format(origin, destination), "\n")
+        while len(camino) != 0:
+            print(camino.pop(),"->", end=" ")
+        #print("\n\nTotal Distance: {} meters".format(round(computed_distance,3)))
+        print("Average Risk:", round(computed_risk,3))
+    
     except KeyError:
         print("No path with given conditions")
-    
-    path2 = path(prev_vertex2, destination, deque([destination]))
-    print("Shortest path from {} to {}: ".format(origin, destination), "\n")
-    while len(path2) != 0:
-        print(path2.pop(),"->", end=" ")
-    print("\n\nTotal Distance:", min_distance)
-    print("")
-    
 
 main()
