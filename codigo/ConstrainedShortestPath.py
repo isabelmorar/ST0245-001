@@ -184,3 +184,11 @@ def main():
         print("No path with given conditions")
 
 main()
+
+"""
+The following coordinates were used for the test cases:
+    - Eafit = "(-75.5778046, 6.2029412)"
+    - U_Medellin = "(-75.6101004, 6.2312125)"
+    - U_Antioquia = "(-75.5694416, 6.2650137)"
+    - U_Nacional = "(-75.5762232, 6.266327)"
+    - LuisAmigo = "(-75.5832559, 6.2601878)" """
