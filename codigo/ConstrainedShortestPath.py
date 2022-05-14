@@ -91,7 +91,7 @@ def lowest_risk(graph, starting_vertex, destination):
                 if av_risk < risks[neighbor]: 
                     prev_vertex[neighbor], risks[neighbor] = current_vertex, av_risk
                     heapq.heappush(priority, (distance, neighbor, sum1))
-                    visited.append(neighbor)
+                    visited.append(current_vertex)
                     
     return risks[destination], prev_vertex
 
@@ -121,7 +121,7 @@ def algorithm2(graph, starting_vertex, destination, max_distance):
                         prev_vertex[neighbor] = current_vertex
                         distances[neighbor], risks[neighbor] = distance, av_risk
                         heapq.heappush(priority, (distance, neighbor, sum1))
-                        visited.append(neighbor)
+                        visited.append(current_vertex)
                    
     return distances[destination], prev_vertex, risks[destination]
     
