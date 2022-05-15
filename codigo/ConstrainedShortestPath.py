@@ -71,14 +71,14 @@ def algorithm1(graph, starting_vertex, destination, max_risk):
 
 
 def lowest_risk(graph, starting_vertex, destination):
-    risks = {v: float('infinity') for v in graph}
+    risks = {v: 1 for v in graph}
     prev_vertex = {v: None for v in graph}
     risks[starting_vertex], prev_vertex[starting_vertex] = 0, -1
     
     visited = deque([starting_vertex])
     priority = [(0, starting_vertex, 0)]
     while len(priority) > 0:
-        current_distance, current_vertex, current_sum1 = heapq.heappop(priority)
+        current_sum1, current_vertex, current_distance,  = heapq.heappop(priority)
         if current_vertex is destination:
            break
         for neighbor, values in graph[current_vertex].items():
@@ -90,9 +90,9 @@ def lowest_risk(graph, starting_vertex, destination):
                 
                 if av_risk < risks[neighbor]: 
                     prev_vertex[neighbor], risks[neighbor] = current_vertex, av_risk
-                    heapq.heappush(priority, (distance, neighbor, sum1))
+                    heapq.heappush(priority, (sum1, neighbor, distance,))
                     visited.append(current_vertex)
-                    
+         
     return risks[destination], prev_vertex
 
 
@@ -106,7 +106,7 @@ def algorithm2(graph, starting_vertex, destination, max_distance):
     visited = deque([starting_vertex])
     priority = [(0, starting_vertex, 0)]
     while len(priority) > 0:
-        current_distance, current_vertex, current_sum1 = heapq.heappop(priority)
+        current_sum1, current_vertex, current_distance = heapq.heappop(priority)
         if current_vertex is destination:
             break
         for neighbor, values in graph[current_vertex].items():
@@ -120,7 +120,7 @@ def algorithm2(graph, starting_vertex, destination, max_distance):
                     if distance <= max_distance:
                         prev_vertex[neighbor] = current_vertex
                         distances[neighbor], risks[neighbor] = distance, av_risk
-                        heapq.heappush(priority, (distance, neighbor, sum1))
+                        heapq.heappush(priority, (sum1, neighbor, distance))
                         visited.append(current_vertex)
                    
     return distances[destination], prev_vertex, risks[destination]
@@ -150,23 +150,23 @@ def main():
     path1 = path(prev_shortest, destination, deque([destination]))
     while len(path1) != 0:
         print(path1.pop(),"->", end=" ")
-    print("\n\nTotal Distance:", round(distance_shortest,3))
+    print("\n\nTotal Distance:", round(distance_shortest,3), "meters")
   
     print("\n\nShortest path from {} to {} without exceeding risk of {}: ".format(origin, destination, max_risk), "\n")
     try: 
         path2 = path(prev_algorithm1, destination, deque([destination]))
         while len(path2) != 0:
             print(path2.pop(),"->", end=" ")
-        print("\n\nTotal Distance:", round(distance_algorithm1,3))
+        print("\n\nTotal Distance:", round(distance_algorithm1,3), "meters")
         print("Average Weighted Risk:", round(risk_algorithm1,3))
     except KeyError:
         print("No path with given conditions")
     print("\n-----")
     
     #Execution algorithm2 + path with lowest risk
-    risk_lowest, prev_lowest = lowest_risk(adj_list, origin, destination)
+    distance_lowest, prev_lowest, risk_lowest = algorithm2(adj_list, origin, destination, distance_algorithm1 + 200)
     distance_algorithm2, prev_algorithm2, risk_algorithm2 = algorithm2(adj_list, origin, destination, max_distance)
-    
+
     print("\nPath with lowest risk from {} to {}: ".format(origin, destination), "\n")
     path3 = path(prev_lowest, destination, deque([destination]))
     while len(path3) != 0:
@@ -178,7 +178,7 @@ def main():
         path4 = path(prev_algorithm2, destination, deque([destination]))
         while len(path4) != 0:
             print(path4.pop(),"->", end=" ")
-        print("\n\nTotal Distance:", round(distance_algorithm2,3))
+        print("\n\nTotal Distance:", round(distance_algorithm2,3), "meters")
         print("Average Weighted Risk:", round(risk_algorithm2,3))
     except KeyError:
         print("No path with given conditions")
