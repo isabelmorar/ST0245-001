@@ -7,8 +7,8 @@ from ConstrainedShortestPath import data_structure, path, algorithm2, algorithm1
 
 #Load area and edges
 area = pd.read_csv('poligono_de_medellin.csv',sep=';')
-#area['geometry'] = area['geometry'].apply(wkt.loads)
-#area = gpd.GeoDataFrame(area)
+area['geometry'] = area['geometry'].apply(wkt.loads)
+area = gpd.GeoDataFrame(area)
 
 data = pd.read_csv("calles_de_medellin_con_acoso.csv",sep=';')
 data['geometry'] = data['geometry'].apply(wkt.loads)
@@ -57,7 +57,7 @@ except KeyError:
 
 #Plot 1
 fig, ax = plt.subplots(figsize=(12,8))
-#area.plot(ax=ax, facecolor='black')
+area.plot(ax=ax, facecolor='black')
 edges.plot(ax=ax, linewidth=0.3, column='harassmentRisk', legend=True, missing_kwds={'color': 'dimgray'})
 new1.plot(ax=ax, linewidth=5, color='red')
 new2.plot(ax=ax, linewidth=5, color='blue')
@@ -109,7 +109,7 @@ except KeyError:
 
 #Plot 2
 fig, ax = plt.subplots(figsize=(12,8))
-#area.plot(ax=ax, facecolor='black')
+area.plot(ax=ax, facecolor='black')
 edges.plot(ax=ax, linewidth=0.3, column='length', legend=True, missing_kwds={'color': 'dimgray'})
 new1.plot(ax=ax, linewidth=5, color='red')
 new2.plot(ax=ax, linewidth=5, color='blue')
