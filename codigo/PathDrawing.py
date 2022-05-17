@@ -95,7 +95,7 @@ path3_origins.pop()
 path3_destinations.pop(0)
 
 try: 
-    print("\nPath with lowest risk without excedding distance of {} meters (black) - ".format(current))
+    print("\nPath with lowest risk without excedding distance of {} meters (black) - ".format(max_distance))
     print("Total Distance: {} meters".format(round(distance_algorithm2,3)))
     print("Average Risk:", round(risk_algorithm2,3))
     path4 = path(prev_algorithm2, destination, deque([destination]))
