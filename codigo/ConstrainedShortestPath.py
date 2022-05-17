@@ -90,8 +90,8 @@ def lowest_risk(graph, starting_vertex, destination):
                 
                 if av_risk < risks[neighbor]: 
                     prev_vertex[neighbor], risks[neighbor] = current_vertex, av_risk
-                    heapq.heappush(priority, (sum1, neighbor, distance,))
-                    visited.append(current_vertex)
+                    heapq.heappush(priority, (sum1, neighbor, distance))
+        visited.append(current_vertex)
          
     return risks[destination], prev_vertex
 
@@ -121,7 +121,7 @@ def algorithm2(graph, starting_vertex, destination, max_distance):
                         prev_vertex[neighbor] = current_vertex
                         distances[neighbor], risks[neighbor] = distance, av_risk
                         heapq.heappush(priority, (sum1, neighbor, distance))
-                        visited.append(current_vertex)
+        visited.append(current_vertex)
                    
     return distances[destination], prev_vertex, risks[destination]
     
@@ -142,17 +142,10 @@ def main():
     max_distance = float(input("Enter maximum distance wanted on path: "))
     print("\n-----")
     
-    #Execution algorithm1 + shortest path 
-    distance_shortest, prev_shortest = shortest_distance(adj_list, origin, destination)
+    #Execution algorithm1  
     distance_algorithm1, prev_algorithm1, risk_algorithm1 = algorithm1(adj_list, origin, destination, max_risk)
     
-    print("\nShortest path from {} to {}: ".format(origin, destination), "\n")
-    path1 = path(prev_shortest, destination, deque([destination]))
-    while len(path1) != 0:
-        print(path1.pop(),"->", end=" ")
-    print("\n\nTotal Distance:", round(distance_shortest,3), "meters")
-  
-    print("\n\nShortest path from {} to {} without exceeding risk of {}: ".format(origin, destination, max_risk), "\n")
+    print("\nShortest path from {} to {} without exceeding risk of {}: ".format(origin, destination, max_risk), "\n")
     try: 
         path2 = path(prev_algorithm1, destination, deque([destination]))
         while len(path2) != 0:
@@ -163,17 +156,10 @@ def main():
         print("No path with given conditions")
     print("\n-----")
     
-    #Execution algorithm2 + path with lowest risk
-    distance_lowest, prev_lowest, risk_lowest = algorithm2(adj_list, origin, destination, distance_algorithm1 + 200)
+    #Execution algorithm2
     distance_algorithm2, prev_algorithm2, risk_algorithm2 = algorithm2(adj_list, origin, destination, max_distance)
-
-    print("\nPath with lowest risk from {} to {}: ".format(origin, destination), "\n")
-    path3 = path(prev_lowest, destination, deque([destination]))
-    while len(path3) != 0:
-        print(path3.pop(),"->", end=" ")
-    print("\n\nAverage Weighted Risk:", round(risk_lowest,3))
-
-    print("\n\nPath with lowest risk from {} to {} without exceeding distance of {} meters: ".format(origin, destination, max_distance), "\n")
+    
+    print("\nPath with lowest risk from {} to {} without exceeding distance of {} meters: ".format(origin, destination, max_distance), "\n")
     try: 
         path4 = path(prev_algorithm2, destination, deque([destination]))
         while len(path4) != 0:
