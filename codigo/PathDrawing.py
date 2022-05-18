@@ -32,7 +32,7 @@ new1, new2 = gpd.GeoSeries(origin_coordinates), gpd.GeoSeries(destination_coordi
 distance_algorithm1, prev_algorithm1, risk_algorithm1 = algorithm1(adj_list, origin, destination, max_risk)
 distance_shortest, prev_shortest, risk_shortest = algorithm1(adj_list, origin, destination,1)
 
-print("\n\n** Origin shown in red and destination shown in blue **\n")
+print("\n\n** Origin shown in red and destination shown in yellow **\n")
 print("Shortest path (red) - ")
 print("Total Distance: {} meters".format(round(distance_shortest,3)))
 print("Average Risk:", round(risk_shortest,3))
@@ -43,7 +43,7 @@ path1_origins.pop()
 path1_destinations.pop(0)
 
 try: 
-    print("\nShortest path without exceeding risk of {} (black) - ".format(max_risk))
+    print("\nShortest path without exceeding risk of {} (white) - ".format(max_risk))
     print("Total Distance: {} meters".format(round(distance_algorithm1,3)))
     print("Average Risk:", round(risk_algorithm1,3))
     path2 = path(prev_algorithm1, destination, deque([destination]))
@@ -60,7 +60,7 @@ fig, ax = plt.subplots(figsize=(12,8))
 area.plot(ax=ax, facecolor='black')
 edges.plot(ax=ax, linewidth=0.3, column='harassmentRisk', legend=True, missing_kwds={'color': 'dimgray'})
 new1.plot(ax=ax, linewidth=5, color='red')
-new2.plot(ax=ax, linewidth=5, color='blue')
+new2.plot(ax=ax, linewidth=5, color='yellow')
 
 for i in range(len(path1_origins)):
     current = data[(data["origin"] == path1_origins[i]) & (data["destination"] == path1_destinations[i])]
@@ -74,7 +74,7 @@ for i in range(len(path2_origins)):
     geometry = gpd.GeoSeries(current["geometry"])
     if geometry.empty:
         continue 
-    geometry.plot(ax=ax, linewidth = 2, edgecolor='black')         
+    geometry.plot(ax=ax, linewidth = 2, edgecolor='white')         
 
 plt.title("Riesgo de acoso en las calles de Medellín")
 plt.tight_layout()
@@ -85,7 +85,7 @@ plt.savefig("mapa-riesgo-de-acoso.png")
 risk_lowest, prev_lowest, = lowest_risk(adj_list, origin, destination)
 distance_algorithm2, prev_algorithm2, risk_algorithm2 = algorithm2(adj_list, origin, destination, max_distance)
 
-print("\n\n** Origin shown in red and destination shown in blue **\n")
+print("\n\n** Origin shown in red and destination shown in yellow **\n")
 print("Path with lowest risk (yellow) - ")
 print("Average Risk:", round(risk_lowest,3))
 path3 = path(prev_lowest, destination, deque([destination]))
@@ -95,7 +95,7 @@ path3_origins.pop()
 path3_destinations.pop(0)
 
 try: 
-    print("\nPath with lowest risk without excedding distance of {} meters (black) - ".format(max_distance))
+    print("\nPath with lowest risk without excedding distance of {} meters (white) - ".format(max_distance))
     print("Total Distance: {} meters".format(round(distance_algorithm2,3)))
     print("Average Risk:", round(risk_algorithm2,3))
     path4 = path(prev_algorithm2, destination, deque([destination]))
@@ -112,7 +112,7 @@ fig, ax = plt.subplots(figsize=(12,8))
 area.plot(ax=ax, facecolor='black')
 edges.plot(ax=ax, linewidth=0.3, column='length', legend=True, missing_kwds={'color': 'dimgray'})
 new1.plot(ax=ax, linewidth=5, color='red')
-new2.plot(ax=ax, linewidth=5, color='blue')
+new2.plot(ax=ax, linewidth=5, color='yellow')
 
 for i in range(len(path3_origins)):
     current = data[(data["origin"] == path3_origins[i]) & (data["destination"] == path3_destinations[i])]
@@ -126,9 +126,8 @@ for i in range(len(path4_origins)):
     geometry = gpd.GeoSeries(current["geometry"])
     if geometry.empty:
         continue 
-    geometry.plot(ax=ax, linewidth = 2, edgecolor='black')
+    geometry.plot(ax=ax, linewidth = 2, edgecolor='white')
 
 plt.title("Longitud en metros de las calles de Medellín")
 plt.tight_layout()
 plt.savefig("mapa-de-called-con-longitud.png")
-
